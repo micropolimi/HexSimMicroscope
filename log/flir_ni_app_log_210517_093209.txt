@@ -1,0 +1,24 @@
+2021-05-18T18:37:56|CRITICAL|root|Unhandled exception:Traceback (most recent call last):
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Microscope\FLIR_NI_measure.py", line 136, in run
+    self.img = self.image_gen.camera.get_nparray()
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\Flir_ScopeFoundry\camera_device.py", line 69, in get_nparray
+    return self.cam.get_array()
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\simple_pyspin\__init__.py", line 221, in get_array
+    img = self.cam.GetNextImage(PySpin.EVENT_TIMEOUT_INFINITE if wait else PySpin.EVENT_TIMEOUT_NONE)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\PySpin\PySpin.py", line 47850, in GetNextImage
+    return _PySpin._SWIG_CamPtr_GetNextImage(self, *args)
+_PySpin.SpinnakerException: Spinnaker: Camera is not streaming [-1010]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\measurement.py", line 25, in run
+    self.measurement._thread_run()
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\measurement.py", line 179, in _thread_run
+    self.run()
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Microscope\FLIR_NI_measure.py", line 192, in run
+    self.ni_ao_0.stop()
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\NIdaqmx_ScopeFoundry\ni_ao_hardware.py", line 111, in stop
+    self.AO_device.stop_task()
+AttributeError: 'NI_AO_hw' object has no attribute 'AO_device'
+

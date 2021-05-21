@@ -32,14 +32,20 @@ class FlirNImeasure(Measurement):
         self.settings.New('save_h5', dtype=bool, initial=False)         
         self.settings.New('refresh_period',dtype = float, unit ='s', spinbox_decimals = 3, initial = 0.05, vmin = 0)        
         
-        self.settings.New('xsampling', dtype=float, unit='um', initial=0.0586) 
-        self.settings.New('ysampling', dtype=float, unit='um', initial=0.0586)
-        self.settings.New('zsampling', dtype=float, unit='um', initial=1.0)
+        self.settings.New('magnification', dtype=float, initial=63, spinbox_decimals= 2)  
+        self.settings.New('pixel_size', dtype=float, initial=5.86, spinbox_decimals= 2)  
+        
+        #self.settings.New('xsampling', dtype=float, unit='um', initial=0.093, spinbox_decimals= 4) 
+        #self.settings.New('ysampling', dtype=float, unit='um', initial=0.093, spinbox_decimals= 4)
+        #self.settings.New('zsampling', dtype=float, unit='um', initial=1.0)
         
         self.auto_range = self.settings.New('auto_range', dtype=bool, initial=True)
         self.settings.New('auto_levels', dtype=bool, initial=True)
         self.settings.New('level_min', dtype=int, initial=60)
         self.settings.New('level_max', dtype=int, initial=4000)
+        
+        self.settings.New('delay', dtype=float, initial = 0.0 , unit = 's')
+        
         
         self.image_gen = self.app.hardware['FLIRhw']
         
@@ -114,71 +120,73 @@ class FlirNImeasure(Measurement):
                 self.imv.setLevels( min= self.settings['level_min'],
                                     max= self.settings['level_max'])
             
+    
+    def measure(self):
+        self.image_gen.settings['acquisition_mode'] = 'MultiFrame'
+        self.settings['save_h5'] = True
+        self.image_gen.settings['frame_num'] = self.settings['num_phases']
+                
+        voltages = self.read_from_UItable()
+        first_frame_acquired = False
+        frame_num  = self.image_gen.frame_num.val
+        
+        self.image_gen.camera.set_framenum(1) # acquire 1 frame at a time
+        self.image_gen.camera.acq_start()
+        
+        for frame_idx in range(frame_num):
+            
+            v0 = float(voltages[0][frame_idx])
+            v1 = float(voltages[1][frame_idx])
+            self.ni_ao_0.AO_device.write_constant_voltage(v0)
+            self.ni_ao_1.AO_device.write_constant_voltage(v1)
+            time.sleep(0.05) #TODO remove after solving nissue
+            self.frame_index = frame_idx
+            self.image_gen.camera.acq_start()
+            self.img = self.image_gen.camera.get_nparray()
+            self.image_gen.camera.acq_stop()                
+            if self.settings['save_h5']:
+                if not first_frame_acquired:
+                    self.create_h5_file()
+                    first_frame_acquired = True
+                    
+                self.image_h5[frame_idx,:,:] = self.img
+                self.h5file.flush()
+            
+            if self.interrupt_measurement_called:
+                break
+            time.sleep(self.settings['delay'])
+        self.image_gen.camera.acq_stop()
+    
+    
+    
+    
+    
+    
     def run(self):
-        """
-        """
         self.image_gen.read_from_hardware()
         
         try:          
             self.frame_index = 0          
-            if not self.settings['measure']:
-                """
-                If measure is not active, acquire frames indefinitely. No save in h5 is performed 
-                """
-                self.image_gen.settings['acquisition_mode'] = 'Continuous'
-                
-                self.image_gen.camera.acq_start() 
-                while not self.interrupt_measurement_called:
-                     
-                    self.img = self.image_gen.camera.get_nparray()
-                    if self.interrupt_measurement_called:
-                        break
-                
-                self.image_gen.camera.acq_stop()                              
-            
-            else:  #elif self.settings['measure']:
-                """
-                If Measure is on, set the AO coltage constant for two channels,
-                acquire Nframes frames, save them in h5. Only 1 frame is acquired for each step
-                """
-                self.image_gen.settings['acquisition_mode'] = 'MultiFrame'
-                self.settings['save_h5'] = True
-                self.image_gen.settings['frame_num'] = self.settings['num_phases']
-                
-                voltages = self.read_from_UItable()
-                first_frame_acquired = False
-                frame_num  = self.image_gen.frame_num.val
-                
-                self.image_gen.camera.set_framenum(1) # acquire 1 frame at a time
-                self.image_gen.camera.acq_start()
-                
-                for frame_idx in range(frame_num):
-                    
-                    v0 = float(voltages[0][frame_idx])
-                    v1 = float(voltages[1][frame_idx])
-                    self.ni_ao_0.AO_device.write_constant_voltage(v0)
-                    self.ni_ao_1.AO_device.write_constant_voltage(v1)
-                    time.sleep(0.05) #TODO remove after solving nissue
-                    self.frame_index = frame_idx
-                    self.image_gen.camera.acq_start()
-                    self.img = self.image_gen.camera.get_nparray()
-                    self.image_gen.camera.acq_stop()                
-                    if self.settings['save_h5']:
-                        if not first_frame_acquired:
-                            self.create_h5_file()
-                            first_frame_acquired = True
-                            
-                        self.image_h5[frame_idx,:,:] = self.img
-                        self.h5file.flush()
-                    
-                    if self.interrupt_measurement_called:
-                        break
-                self.image_gen.camera.acq_stop()
-                              
+            """
+            If measure is not active, acquire frames indefinitely. No save in h5 is performed 
+            """
+            self.image_gen.settings['acquisition_mode'] = 'Continuous'
+            self.image_gen.camera.acq_start() 
+            while not self.interrupt_measurement_called:
+                 
+                self.img = self.image_gen.camera.get_nparray()
+                if self.interrupt_measurement_called:
+                    break
+                if self.settings['measure']:
+                    """
+                    If measure is activated, acquisition is interrupted a measurement is run
+                    """
+                    self.image_gen.camera.acq_stop()
+                    self.measure()
+                    break
         finally:            
             
             self.image_gen.camera.acq_stop()
-            
             if self.settings['save_h5'] and hasattr(self, 'h5file'):
                 # make sure to close the data file
                 self.h5file.close() 
@@ -270,7 +278,7 @@ class FlirNImeasure(Measurement):
         if sample == '':
             sample_name = '_'.join([timestamp, self.name])
         else:
-            sample_name = '_'.join([timestamp, self.name, sample])
+            sample_name = '_'.join([timestamp, sample, self.name])
         fname = os.path.join(self.app.settings['save_dir'], sample_name + '.h5')
         
         self.h5file = h5_io.h5_base_file(app=self.app, measurement=self, fname = fname)
@@ -283,7 +291,9 @@ class FlirNImeasure(Measurement):
         self.image_h5 = self.h5_group.create_dataset(name  = 't0/c0/image', 
                                                   shape = [length, img_size[0], img_size[1]],
                                                   dtype = dtype)
-        self.image_h5.attrs['element_size_um'] =  [self.settings['zsampling'],self.settings['ysampling'],self.settings['xsampling']]
+        
+        xy_sampling = self.settings['pixel_size'] / self.settings['magnification']
+        self.image_h5.attrs['element_size_um'] =  [1.0,xy_sampling,xy_sampling]
                    
 
     

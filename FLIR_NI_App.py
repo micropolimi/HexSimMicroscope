@@ -35,8 +35,13 @@ class FLIR_NI_App(BaseMicroscopeApp):
            
         # Add measurement components
         print("Create Measurement objects")
+        
         from HexSIM_Microscope.FLIR_NI_measure import FlirNImeasure
         self.add_measurement(FlirNImeasure(self))
+        
+        from HexSimInstrument.HexSimAnalysis2 import HexSimAnalysis
+        self.add_measurement(HexSimAnalysis)
+        
         
         # show ui
         self.ui.show()
