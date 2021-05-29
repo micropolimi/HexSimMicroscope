@@ -1,0 +1,17 @@
+2021-05-24T15:40:31|CRITICAL|root|Unhandled exception:Traceback (most recent call last):
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Analyser\HexSimAnalyser_measurement.py", line 465, in showMessageWindow
+    self.messageWindow = MessageWindow(self.h, self.kx_input, self.ky_input)
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Analyser\HexSimAnalyser_measurement.py", line 477, in __init__
+    self.ui = uic.loadUi('calibration_results.ui',self)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\PyQt5\uic\__init__.py", line 226, in loadUi
+    return DynamicUILoader(package).loadUi(uifile, baseinstance, resource_suffix)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\PyQt5\uic\Loader\loader.py", line 72, in loadUi
+    return self.parse(filename, resource_suffix, basedir)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\PyQt5\uic\uiparser.py", line 1013, in parse
+    document = parse(filename)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\xml\etree\ElementTree.py", line 1202, in parse
+    tree.parse(source, parser)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\xml\etree\ElementTree.py", line 584, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'calibration_results.ui'
+

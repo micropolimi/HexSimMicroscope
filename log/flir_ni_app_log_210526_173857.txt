@@ -1,0 +1,9 @@
+2021-05-26T18:01:30|CRITICAL|root|Unhandled exception:Traceback (most recent call last):
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\pyqtgraph\GraphicsScene\GraphicsScene.py", line 172, in mouseMoveEvent
+    self.sendHoverEvents(ev)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\pyqtgraph\GraphicsScene\GraphicsScene.py", line 241, in sendHoverEvents
+    items = self.itemsNearEvent(event, hoverable=True)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\pyqtgraph\GraphicsScene\GraphicsScene.py", line 407, in itemsNearEvent
+    if hoverable and not hasattr(item, 'hoverEvent'):
+RuntimeError: wrapped C/C++ object of type ChildGroup has been deleted
+

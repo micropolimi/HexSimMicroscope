@@ -1,0 +1,26 @@
+2021-05-26T15:55:59|CRITICAL|root|Unhandled exception:Traceback (most recent call last):
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Analyser\HexSimAnalyser_measurement.py", line 218, in cutRoi
+    self.update_display()
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Analyser\HexSimAnalyser_measurement.py", line 166, in update_display
+    self.imvRaw.setImage(self.imageRaw,
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\pyqtgraph\imageview\ImageView.py", line 322, in setImage
+    self.updateImage(autoHistogramRange=autoHistogramRange)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\pyqtgraph\imageview\ImageView.py", line 714, in updateImage
+    image = self.getProcessedImage()
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\pyqtgraph\imageview\ImageView.py", line 407, in getProcessedImage
+    self.levelMin = min([level[0] for level in self._imageLevels])
+ValueError: min() arg is an empty sequence
+
+2021-05-26T15:57:26|CRITICAL|root|Unhandled exception:Traceback (most recent call last):
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Analyser\HexSimAnalyser_measurement.py", line 218, in cutRoi
+    self.update_display()
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Analyser\HexSimAnalyser_measurement.py", line 166, in update_display
+    self.imvRaw.setImage(self.imageRaw,
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\pyqtgraph\imageview\ImageView.py", line 322, in setImage
+    self.updateImage(autoHistogramRange=autoHistogramRange)
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\pyqtgraph\imageview\ImageView.py", line 714, in updateImage
+    image = self.getProcessedImage()
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\pyqtgraph\imageview\ImageView.py", line 407, in getProcessedImage
+    self.levelMin = min([level[0] for level in self._imageLevels])
+ValueError: min() arg is an empty sequence
+

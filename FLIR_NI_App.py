@@ -39,7 +39,7 @@ class FLIR_NI_App(BaseMicroscopeApp):
         from HexSIM_Microscope.FLIR_NI_measure import FlirNImeasure
         self.add_measurement(FlirNImeasure(self))
         
-        from HexSimInstrument.HexSimAnalysis2 import HexSimAnalysis
+        from HexSimAnalyser.HexSimAnalyser_measurement import HexSimAnalysis
         self.add_measurement(HexSimAnalysis)
         
         

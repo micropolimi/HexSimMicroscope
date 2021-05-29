@@ -23,7 +23,6 @@ class FlirNImeasure(Measurement):
         Runs once during App initialization.
         This is the place to load a user interface file,
         define settings, and set up data structures.
-        For Pointgrey Grasshopper CMOS the pixelsize is: 5.86um
         """
         
         self.ui_filename = sibling_path(__file__, "hexSIM.ui")
@@ -33,11 +32,11 @@ class FlirNImeasure(Measurement):
         self.settings.New('refresh_period',dtype = float, unit ='s', spinbox_decimals = 3, initial = 0.05, vmin = 0)        
         
         self.settings.New('magnification', dtype=float, initial=63, spinbox_decimals= 2)  
-        self.settings.New('pixel_size', dtype=float, initial=5.86, spinbox_decimals= 2)  
+        self.settings.New('pixelsize', dtype=float, initial=5.86, spinbox_decimals= 2, unit='um') #For Pointgrey Grasshopper CMOS the pixelsize is: 5.86um 
+        self.settings.New('n', dtype=float, initial=1.000, spinbox_decimals= 3)  
+        self.settings.New('NA', dtype=float, initial=0.75, spinbox_decimals= 3) 
+        self.settings.New('wavelength', dtype=float, initial=0.532, spinbox_decimals= 3, unit='um')  
         
-        #self.settings.New('xsampling', dtype=float, unit='um', initial=0.093, spinbox_decimals= 4) 
-        #self.settings.New('ysampling', dtype=float, unit='um', initial=0.093, spinbox_decimals= 4)
-        #self.settings.New('zsampling', dtype=float, unit='um', initial=1.0)
         
         self.auto_range = self.settings.New('auto_range', dtype=bool, initial=True)
         self.settings.New('auto_levels', dtype=bool, initial=True)
@@ -45,7 +44,6 @@ class FlirNImeasure(Measurement):
         self.settings.New('level_max', dtype=int, initial=4000)
         
         self.settings.New('delay', dtype=float, initial = 0.0 , unit = 's')
-        
         
         self.image_gen = self.app.hardware['FLIRhw']
         
@@ -67,7 +65,6 @@ class FlirNImeasure(Measurement):
         This is the place to make all graphical interface initializations,
         build plots, etc.
         """
-        
         # connect ui widgets to measurement/hardware settings or functions
         self.ui.start_pushButton.clicked.connect(self.start)
         self.ui.interrupt_pushButton.clicked.connect(self.interrupt)
@@ -91,7 +88,6 @@ class FlirNImeasure(Measurement):
                   ]
         cmap = pg.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
         self.imv.setColorMap(cmap)
-        
         
     def update_display(self):
         """
@@ -139,7 +135,7 @@ class FlirNImeasure(Measurement):
             v1 = float(voltages[1][frame_idx])
             self.ni_ao_0.AO_device.write_constant_voltage(v0)
             self.ni_ao_1.AO_device.write_constant_voltage(v1)
-            time.sleep(0.05) #TODO remove after solving nissue
+            time.sleep(0.05) #TODO remove after solving the issue
             self.frame_index = frame_idx
             self.image_gen.camera.acq_start()
             self.img = self.image_gen.camera.get_nparray()
@@ -155,12 +151,7 @@ class FlirNImeasure(Measurement):
             if self.interrupt_measurement_called:
                 break
             time.sleep(self.settings['delay'])
-        self.image_gen.camera.acq_stop()
-    
-    
-    
-    
-    
+        self.image_gen.camera.acq_stop()  
     
     def run(self):
         self.image_gen.read_from_hardware()
@@ -203,8 +194,7 @@ class FlirNImeasure(Measurement):
         for j in range(cols):    
             for i in range(rows):
                 self.settings.New(f'table{i,j}', dtype=float, initial=0.0)
-                
-    
+                    
     def resize_UItable(self,*args):
         cols = self.settings.num_phases.val
         rows = self.settings.num_channels.val
@@ -240,7 +230,6 @@ class FlirNImeasure(Measurement):
                   self.settings[f'table{i,j}'] = values[i][j] 
         # print(values)
         return values  
-
 
     def write_UItable(self):
         """
@@ -292,8 +281,5 @@ class FlirNImeasure(Measurement):
                                                   shape = [length, img_size[0], img_size[1]],
                                                   dtype = dtype)
         
-        xy_sampling = self.settings['pixel_size'] / self.settings['magnification']
+        xy_sampling = self.settings['pixelsize'] / self.settings['magnification']
         self.image_h5.attrs['element_size_um'] =  [1.0,xy_sampling,xy_sampling]
-                   
-
-    
