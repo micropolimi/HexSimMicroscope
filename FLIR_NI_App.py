@@ -30,13 +30,13 @@ class FLIR_NI_App(BaseMicroscopeApp):
         self.add_hardware(NI_AO_hw(self, name='Analog_Output_0'))
         self.add_hardware(NI_AO_hw(self, name='Analog_Output_1'))
         #self.add_hardware(NI_DO_hw(self))
-        #self.☺add_hardware(NI_CO_hw(self))
+        #self.add_hardware(NI_CO_hw(self))
         self.add_hardware(FlirHW(self))
            
         # Add measurement components
         print("Create Measurement objects")
         
-        from HexSIM_Microscope.FLIR_NI_measure import FlirNImeasure
+        from HexSIM_Microscope.FLIR_NI_calibration_measure import FlirNImeasure
         self.add_measurement(FlirNImeasure(self))
         
         from HexSimAnalyser.HexSimAnalyser_measurement import HexSimAnalysis

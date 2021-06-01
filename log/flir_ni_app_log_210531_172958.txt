@@ -1,0 +1,9 @@
+2021-05-31T17:30:14|CRITICAL|root|Unhandled exception:Traceback (most recent call last):
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\measurement.py", line 25, in run
+    self.measurement._thread_run()
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\measurement.py", line 179, in _thread_run
+    self.run()
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Microscope\FLIR_NI_calibration_measure.py", line 216, in run
+    self.calibrate()
+AttributeError: 'FlirNImeasure' object has no attribute 'calibrate'
+

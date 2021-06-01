@@ -1,0 +1,11 @@
+2021-05-31T17:28:42|CRITICAL|root|Unhandled exception:Traceback (most recent call last):
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\measurement.py", line 25, in run
+    self.measurement._thread_run()
+  File "C:\Users\LAB\Anaconda3\envs\scopefoundry\lib\site-packages\ScopeFoundry\measurement.py", line 179, in _thread_run
+    self.run()
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Microscope\FLIR_NI_calibration_measure.py", line 210, in run
+    self.measure(save_data=False)
+  File "C:\LabPrograms\Python\ScopeFoundryProjects\PROCHIP microscope\HexSIM_Microscope\FLIR_NI_calibration_measure.py", line 161, in measure
+    self.imgs[frame_idx,:,:] = self.img
+ValueError: could not broadcast input array from shape (1200,1920) into shape (1920,1200)
+
